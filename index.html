@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mastering Capitalization & Punctuation - English Class XI</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Inter & Outfit -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti for Completion celebration -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+    }
+    .badge-rule {
+      box-shadow: 0 2px 8px -2px rgba(99, 102, 241, 0.25);
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- ================= NOTIFICATION TOAST ================= -->
+  <div id="toast" class="fixed top-5 right-5 z-50 transform translate-y-[-120%] opacity-0 transition-all duration-300 max-w-md bg-white border border-slate-200 shadow-2xl rounded-2xl p-4 flex items-center space-x-3 pointer-events-none">
+    <div id="toast-icon-wrapper" class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
+      <i id="toast-icon" class="fa-solid fa-check text-lg"></i>
+    </div>
+    <div class="flex-1">
+      <p id="toast-title" class="text-sm font-bold text-slate-800">Pemberitahuan</p>
+      <p id="toast-message" class="text-xs text-slate-500">Pesan status sistem.</p>
+    </div>
+  </div>
+
+  <!-- ================= TOP NAVIGATION (Shown after login) ================= -->
+  <header id="mainNav" class="hidden sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+          <i class="fa-solid fa-feather text-lg"></i>
+        </div>
+        <div>
+          <h1 class="font-display font-bold text-slate-900 text-lg leading-tight">EngPunctuate!</h1>
+          <p class="text-xs text-slate-500 font-medium">Bahasa Inggris Kelas XI SMA</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="hidden md:flex items-center space-x-1 bg-slate-100 p-1 rounded-xl">
+        <button onclick="switchTab('materi')" id="tabBtn-materi" class="nav-tab px-4 py-1.5 rounded-lg text-sm font-semibold text-brand-600 bg-white shadow-sm transition">
+          <i class="fa-solid fa-book-open mr-1.5"></i>Materi Pembelajaran
+        </button>
+        <button onclick="switchTab('latihan')" id="tabBtn-latihan" class="nav-tab px-4 py-1.5 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 transition">
+          <i class="fa-solid fa-gamepad mr-1.5"></i>Mini Playground
+        </button>
+        <button onclick="switchTab('kuis')" id="tabBtn-kuis" class="nav-tab px-4 py-1.5 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 transition">
+          <i class="fa-solid fa-file-pen mr-1.5"></i>Assessment (10 Soal)
+        </button>
+      </nav>
+
+      <!-- Student Profile Card in Nav -->
+      <div class="flex items-center space-x-3">
+        <button onclick="openConfigModal()" title="Konfigurasi Google Sheet" class="p-2 rounded-xl text-slate-500 hover:text-brand-600 hover:bg-brand-50 transition border border-slate-200">
+          <i class="fa-solid fa-table text-base"></i>
+        </button>
+        <div class="h-8 w-px bg-slate-200 hidden sm:block"></div>
+        <div class="flex items-center space-x-2 text-right">
+          <div>
+            <p id="navStudentName" class="text-sm font-bold text-slate-800 leading-none">Nama Siswa</p>
+            <span id="navStudentClass" class="inline-block mt-0.5 text-[11px] font-bold px-2 py-0.5 bg-brand-100 text-brand-700 rounded-full">Kelas</span>
+          </div>
+          <button onclick="logout()" title="Keluar" class="p-2 text-rose-500 hover:bg-rose-50 rounded-xl transition">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= SECTION 1: LOGIN PAGE ================= -->
+  <main id="loginSection" class="flex-1 flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-indigo-50 via-slate-50 to-blue-50">
+    <!-- Background Ornaments -->
+    <div class="absolute -top-32 -left-32 w-96 h-96 bg-brand-200/40 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-pink-200/30 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="w-full max-w-md relative z-10">
+      <div class="glass-card border border-white/80 shadow-2xl shadow-indigo-100 rounded-3xl p-6 sm:p-8">
+        
+        <div class="text-center mb-8">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-500 text-white shadow-xl shadow-brand-500/30 mb-4">
+            <i class="fa-solid fa-spell-check text-2xl"></i>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-display font-extrabold text-slate-900 tracking-tight">Portal Siswa Kelas XI</h2>
+          <p class="text-sm text-slate-500 mt-1 font-medium">Modul Interaktif Capitalization & Punctuation</p>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
+          <!-- Nama Siswa -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nama Lengkap Siswa</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+                <i class="fa-solid fa-user"></i>
+              </span>
+              <input type="text" id="inputName" required placeholder="Contoh: Muhammad Farhan"
+                class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white font-medium transition text-slate-800 placeholder:text-slate-400">
+            </div>
+          </div>
+
+          <!-- Pilihan Kelas (XIA / XIB) -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Pilih Rombel / Kelas</label>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="relative flex items-center justify-center p-3.5 border-2 border-slate-200 rounded-xl cursor-pointer hover:bg-indigo-50/50 has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50 transition">
+                <input type="radio" name="classOption" value="XI-A" checked class="sr-only">
+                <div class="text-center">
+                  <div class="text-base font-bold text-slate-800">Kelas XI-A</div>
+                </div>
+              </label>
+
+              <label class="relative flex items-center justify-center p-3.5 border-2 border-slate-200 rounded-xl cursor-pointer hover:bg-indigo-50/50 has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50 transition">
+                <input type="radio" name="classOption" value="XI-B" class="sr-only">
+                <div class="text-center">
+                  <div class="text-base font-bold text-slate-800">Kelas XI-B</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" 
+            class="w-full py-3.5 px-4 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-brand-500/25 transition transform active:scale-[0.98] flex items-center justify-center space-x-2">
+            <span>Masuk ke Pembelajaran</span>
+            <i class="fa-solid fa-arrow-right text-sm"></i>
+          </button>
+        </form>
+
+        <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
+          <span><i class="fa-solid fa-cloud-arrow-up mr-1 text-emerald-500"></i> Auto Sync Google Sheet</span>
+          <span>100% Interaktif</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= SECTION 2: LEARNING PORTAL (TABS) ================= -->
+  <main id="appContent" class="hidden flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- Mobile Navigation Sub-bar -->
+    <div class="flex md:hidden overflow-x-auto pb-2 gap-2 border-b border-slate-200">
+      <button onclick="switchTab('materi')" class="nav-tab-mobile flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-xl text-brand-600 bg-brand-50 border border-brand-200">
+        <i class="fa-solid fa-book-open mr-1"></i> Materi
+      </button>
+      <button onclick="switchTab('latihan')" class="nav-tab-mobile flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-xl text-slate-600 bg-slate-100">
+        <i class="fa-solid fa-gamepad mr-1"></i> Playground
+      </button>
+      <button onclick="switchTab('kuis')" class="nav-tab-mobile flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-xl text-slate-600 bg-slate-100">
+        <i class="fa-solid fa-file-pen mr-1"></i> Ujian 10 Soal
+      </button>
+    </div>
+
+    <!-- ================= TAB 1: MATERI LENGKAP ================= -->
+    <div id="tabContent-materi" class="tab-pane space-y-10 animate-fade-in">
+      
+      <!-- Welcome Hero Banner -->
+      <div class="bg-gradient-to-r from-brand-900 via-indigo-900 to-slate-900 rounded-3xl p-6 sm:p-10 text-white shadow-xl relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 opacity-10 text-9xl font-display font-black pointer-events-none">
+          ?!Aa
+        </div>
+        <div class="max-w-3xl space-y-3 relative z-10">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/30 text-brand-200 border border-brand-400/30">
+            <i class="fa-solid fa-graduation-cap mr-1.5"></i> English For Senior High School Grade XI
+          </span>
+          <h2 class="text-2xl sm:text-4xl font-display font-extrabold tracking-tight">Punctuation & Capitalization Rules</h2>
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+            Dalam penulisan formal (essay, report, formal letter, analytical exposition di kelas XI), penggunaan tanda baca dan huruf kapital sangat menentukan kejelasan makna dan akurasi gramatikal teksmu.
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Concept Navigator -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <a href="#rules-caps" class="p-4 rounded-2xl bg-white border border-slate-200 hover:border-brand-500 transition shadow-sm hover:shadow flex items-center space-x-3 group">
+          <div class="w-10 h-10 rounded-xl bg-indigo-50 text-brand-600 flex items-center justify-center font-bold text-lg group-hover:bg-brand-600 group-hover:text-white transition">
+            Aa
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-slate-800">Capitalization</h4>
+            <p class="text-xs text-slate-500">MINTS Framework</p>
+          </div>
+        </a>
+        <a href="#rules-comma" class="p-4 rounded-2xl bg-white border border-slate-200 hover:border-brand-500 transition shadow-sm hover:shadow flex items-center space-x-3 group">
+          <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-lg group-hover:bg-amber-600 group-hover:text-white transition">
+            ,
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-slate-800">Commas (,)</h4>
+            <p class="text-xs text-slate-500">FANBOYS & Clauses</p>
+          </div>
+        </a>
+        <a href="#rules-semicolon" class="p-4 rounded-2xl bg-white border border-slate-200 hover:border-brand-500 transition shadow-sm hover:shadow flex items-center space-x-3 group">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg group-hover:bg-emerald-600 group-hover:text-white transition">
+            ; :
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-slate-800">Semi & Colon</h4>
+            <p class="text-xs text-slate-500">Intermediate Link</p>
+          </div>
+        </a>
+        <a href="#rules-apostrophe" class="p-4 rounded-2xl bg-white border border-slate-200 hover:border-brand-500 transition shadow-sm hover:shadow flex items-center space-x-3 group">
+          <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-lg group-hover:bg-rose-600 group-hover:text-white transition">
+            ' "
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-slate-800">Apostrophe & Quotes</h4>
+            <p class="text-xs text-slate-500">Possession & Direct</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Detail Materi Section -->
+      <div class="space-y-8">
+        
+        <!-- MATERI 1: CAPITALIZATION (MINTS) -->
+        <section id="rules-caps" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm">
+          <div class="flex items-center space-x-3 mb-4">
+            <span class="w-8 h-8 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-sm">01</span>
+            <h3 class="text-xl font-display font-bold text-slate-900">Capitalization (The "M.I.N.T.S" Strategy)</h3>
+          </div>
+          <p class="text-sm text-slate-600 mb-6">
+            Di tingkat SMA, aturan kapitalisasi tidak hanya sekadar awal kalimat. Ingat akronim <strong class="text-brand-600">M - I - N - T - S</strong> berikut:
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-3 mb-6">
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+              <span class="block text-2xl font-black text-brand-600 font-display">M</span>
+              <strong class="text-xs font-bold text-slate-800">Months, Days, Holidays</strong>
+              <p class="text-[11px] text-slate-500 mt-1"><em>August, Monday, Eid Al-Fitr</em></p>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+              <span class="block text-2xl font-black text-brand-600 font-display">I</span>
+              <strong class="text-xs font-bold text-slate-800">The Pronoun "I"</strong>
+              <p class="text-[11px] text-slate-500 mt-1">Selalu kapital di mana pun posisinya!</p>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+              <span class="block text-2xl font-black text-brand-600 font-display">N</span>
+              <strong class="text-xs font-bold text-slate-800">Names & Proper Nouns</strong>
+              <p class="text-[11px] text-slate-500 mt-1"><em>Dr. Smith, Mount Merapi, Paris</em></p>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+              <span class="block text-2xl font-black text-brand-600 font-display">T</span>
+              <strong class="text-xs font-bold text-slate-800">Titles of Works</strong>
+              <p class="text-[11px] text-slate-500 mt-1"><em>Harry Potter, The Jakarta Post</em></p>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+              <span class="block text-2xl font-black text-brand-600 font-display">S</span>
+              <strong class="text-xs font-bold text-slate-800">Start of Sentences</strong>
+              <p class="text-[11px] text-slate-500 mt-1">Huruf pertama setiap kalimat baru.</p>
+            </div>
+          </div>
+
+          <!-- Misconception alert -->
+          <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 flex items-start space-x-3">
+            <i class="fa-solid fa-triangle-exclamation text-amber-500 text-base mt-0.5"></i>
+            <div class="text-xs sm:text-sm text-amber-900 leading-relaxed">
+              <strong>Peringatan Umum Siswa Kelas XI:</strong> Nama musim (<em>spring, summer, autumn, winter</em>) <u>TIDAK</u> memakai huruf kapital, kecuali jika menjadi nama acara resmi (misal: <em>Winter Olympics</em>).
+            </div>
+          </div>
+        </section>
+
+        <!-- MATERI 2: COMMAS AND COMPOUND SENTENCES -->
+        <section id="rules-comma" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm">
+          <div class="flex items-center space-x-3 mb-4">
+            <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-sm">02</span>
+            <h3 class="text-xl font-display font-bold text-slate-900">The Power of Commas (,) in High School Essays</h3>
+          </div>
+          <p class="text-sm text-slate-600 mb-6">
+            Koma bukan hanya tempat untuk berhenti bernapas! Ada 3 aturan krusial untuk teks analitis & argumentasi:
+          </p>
+
+          <div class="space-y-4">
+            <!-- Rule A -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div>
+                <span class="text-xs font-bold text-brand-600 uppercase">Aturan 1: Intro Clause</span>
+                <p class="text-sm font-semibold text-slate-800 mt-0.5">Gunakan koma setelah klausa pengantar (Adverbial Clause di awal).</p>
+                <p class="text-xs text-slate-500 mt-1">Jika klausa dependen di depan, wajib beri koma sebelum klausa utama.</p>
+              </div>
+              <div class="bg-white p-3 rounded-xl border border-slate-200 text-xs font-mono shrink-0">
+                <span class="text-emerald-600 font-bold">✔ Although it rained, we played soccer.</span><br>
+                <span class="text-rose-500 font-semibold">✖ We played soccer, although it rained. (No comma needed)</span>
+              </div>
+            </div>
+
+            <!-- Rule B -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div>
+                <span class="text-xs font-bold text-brand-600 uppercase">Aturan 2: FANBOYS (Compound Sentences)</span>
+                <p class="text-sm font-semibold text-slate-800 mt-0.5">Koma sebelum Coordinating Conjunction (For, And, Nor, But, Or, Yet, So).</p>
+                <p class="text-xs text-slate-500 mt-1">Hanya berlaku jika menghubungkan dua independent clause (bisa berdiri sendiri).</p>
+              </div>
+              <div class="bg-white p-3 rounded-xl border border-slate-200 text-xs font-mono shrink-0">
+                <span class="text-emerald-600 font-bold">✔ Rian studied hard, but he failed the exam.</span><br>
+                <span class="text-rose-500 font-semibold">✖ Rian studied hard, but failed the exam. (No subject after 'but')</span>
+              </div>
+            </div>
+
+            <!-- Rule C -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div>
+                <span class="text-xs font-bold text-brand-600 uppercase">Aturan 3: Oxford Comma (Series of Items)</span>
+                <p class="text-sm font-semibold text-slate-800 mt-0.5">Koma sebelum 'and' pada item terakhir dalam daftar 3 item atau lebih.</p>
+                <p class="text-xs text-slate-500 mt-1">Mencegah ambiguitas penafsiran dalam tulisan akademis.</p>
+              </div>
+              <div class="bg-white p-3 rounded-xl border border-slate-200 text-xs font-mono shrink-0">
+                <span class="text-emerald-600 font-bold">✔ I love my parents, Lady Gaga, and Batman.</span><br>
+                <span class="text-slate-400">Tanpa Oxford comma bisa berarti orang tua kita adalah Gaga & Batman!</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- MATERI 3: SEMICOLONS & COLONS -->
+        <section id="rules-semicolon" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm">
+          <div class="flex items-center space-x-3 mb-4">
+            <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm">03</span>
+            <h3 class="text-xl font-display font-bold text-slate-900">Semicolon (;) vs. Colon (:) — Intermediate Level</h3>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="p-5 rounded-2xl border-2 border-emerald-100 bg-emerald-50/40 space-y-3">
+              <div class="flex items-center space-x-2">
+                <span class="text-2xl font-black text-emerald-600 font-mono">;</span>
+                <h4 class="font-bold text-slate-800 text-base">Titik Koma (Semicolon)</h4>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Menghubungkan dua independent clauses yang memiliki kaitan makna sangat erat tanpa kata sambung (FANBOYS), atau digunakan sebelum adverbial transitions seperti <em>however, therefore, moreover</em>.
+              </p>
+              <div class="bg-white p-3 rounded-xl border border-emerald-200 text-xs font-mono text-emerald-800">
+                My brother prefers coffee<strong>;</strong> however<strong>,</strong> I prefer hot tea.
+              </div>
+            </div>
+
+            <div class="p-5 rounded-2xl border-2 border-indigo-100 bg-indigo-50/40 space-y-3">
+              <div class="flex items-center space-x-2">
+                <span class="text-2xl font-black text-indigo-600 font-mono">:</span>
+                <h4 class="font-bold text-slate-800 text-base">Titik Dua (Colon)</h4>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Digunakan untuk memperkenalkan daftar (list), penjelasan lebih lanjut, atau kutipan. <strong>Klausul sebelum titik dua WAJIB berupa kalimat lengkap (complete thought).</strong>
+              </p>
+              <div class="bg-white p-3 rounded-xl border border-indigo-200 text-xs font-mono text-indigo-800">
+                You will need three stationery items<strong>:</strong> a pencil, a ruler, and an eraser.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- MATERI 4: APOSTROPHE & QUOTATION MARKS -->
+        <section id="rules-apostrophe" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm">
+          <div class="flex items-center space-x-3 mb-4">
+            <span class="w-8 h-8 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-sm">04</span>
+            <h3 class="text-xl font-display font-bold text-slate-900">Apostrophe (') & Quotation Marks (" ")</h3>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <h5 class="text-sm font-bold text-slate-800"><i class="fa-solid fa-key mr-1.5 text-rose-500"></i>Its vs. It's (Jebakan Terbesar!)</h5>
+              <ul class="text-xs text-slate-600 space-y-1.5 list-disc pl-5">
+                <li><strong class="text-slate-900 font-mono">It's</strong> = Singkatan dari <em>It is</em> atau <em>It has</em>.</li>
+                <li><strong class="text-slate-900 font-mono">Its</strong> = Kata ganti kepunyaan (Possessive), seperti <em>his / her</em> (tanpa apostrof!).</li>
+              </ul>
+              <p class="text-[11px] text-slate-500 italic mt-2">Contoh: The cat cleaned <strong>its</strong> paws because <strong>it's</strong> dirty.</p>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <h5 class="text-sm font-bold text-slate-800"><i class="fa-solid fa-quote-left mr-1.5 text-rose-500"></i>Quotation Marks in Direct Speech</h5>
+              <ul class="text-xs text-slate-600 space-y-1.5 list-disc pl-5">
+                <li>Tanda titik (.) dan koma (,) biasanya berada di <strong>DALAM</strong> tanda petik penutup.</li>
+                <li>Huruf pertama kutipan langsung harus kapital jika berupa kalimat lengkap.</li>
+              </ul>
+              <p class="text-[11px] text-slate-500 italic mt-2">Contoh: Teacher said, <strong>"Open</strong> page 45<strong>."</strong></p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- ================= TAB 2: INTERACTIVE PLAYGROUND / DRILL ================= -->
+    <div id="tabContent-latihan" class="tab-pane hidden space-y-8 animate-fade-in">
+      
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm">
+        <div class="max-w-2xl">
+          <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Interactive Drill</span>
+          <h2 class="text-2xl font-display font-extrabold text-slate-900 mt-1">Sentence Doctor: Find & Fix the Punctuation</h2>
+          <p class="text-sm text-slate-500 mt-1">Uji ketelitianmu! Temukan kesalahan kapitalisasi atau tanda baca pada kalimat di bawah ini dengan mengetikkan versi yang benar.</p>
+        </div>
+
+        <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Drill Card -->
+          <div class="lg:col-span-2 space-y-5 bg-slate-50 border border-slate-200 rounded-2xl p-5 sm:p-6">
+            <div class="flex items-center justify-between">
+              <span id="drillCounter" class="text-xs font-bold text-brand-600 bg-brand-50 px-3 py-1 rounded-full border border-brand-200">
+                Case 1 of 4
+              </span>
+              <span class="text-xs text-slate-400 font-medium">Latihan Cepat Mandiri</span>
+            </div>
+
+            <div>
+              <p class="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1">Kalimat yang Salah (Broken Sentence):</p>
+              <div id="drillBrokenText" class="text-lg font-mono font-semibold text-rose-600 bg-white p-4 rounded-xl border border-rose-200 shadow-inner">
+                when mr handoko visited tokyo last winter he bought an ipad
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Ketik Kalimat Yang Sudah Diperbaiki:</label>
+              <input type="text" id="drillInput" placeholder="Ketik kembali dengan kapital dan tanda baca tepat..."
+                class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 font-mono transition">
+            </div>
+
+            <div class="flex items-center space-x-3">
+              <button onclick="checkDrillAnswer()" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-xl transition shadow shadow-brand-500/20">
+                <i class="fa-solid fa-check mr-1.5"></i> Periksa Jawaban
+              </button>
+              <button onclick="showDrillHint()" class="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-semibold rounded-xl transition">
+                <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> Hint
+              </button>
+              <button onclick="nextDrill()" class="px-4 py-2.5 text-brand-600 hover:bg-brand-50 text-sm font-semibold rounded-xl transition ml-auto">
+                Latihan Berikutnya <i class="fa-solid fa-arrow-right ml-1"></i>
+              </button>
+            </div>
+
+            <div id="drillFeedback" class="hidden p-4 rounded-xl text-xs sm:text-sm font-medium"></div>
+          </div>
+
+          <!-- Flashcard Summary Rules -->
+          <div class="space-y-4">
+            <h4 class="font-display font-bold text-slate-800 text-sm flex items-center">
+              <i class="fa-solid fa-bookmark text-brand-500 mr-2"></i> Pointers Kunci Kelas XI
+            </h4>
+            
+            <div class="p-3.5 bg-white border border-slate-200 rounded-2xl text-xs space-y-1 shadow-sm">
+              <strong class="text-slate-800 block">Titik Dua (:) Bukan untuk Verba</strong>
+              <p class="text-slate-500">Jangan letakkan : setelah kata kerja seperti <em>include</em>, <em>are</em>, atau <em>consist of</em>.</p>
+            </div>
+
+            <div class="p-3.5 bg-white border border-slate-200 rounded-2xl text-xs space-y-1 shadow-sm">
+              <strong class="text-slate-800 block">Tanda Hubung (Hyphen)</strong>
+              <p class="text-slate-500">Gunakan untuk compound adjective sebelum kata benda: <em>a well-known writer</em>.</p>
+            </div>
+
+            <div class="p-3.5 bg-white border border-slate-200 rounded-2xl text-xs space-y-1 shadow-sm">
+              <strong class="text-slate-800 block">Introductory Adverbs</strong>
+              <p class="text-slate-500">Kata seperti <em>However, Therefore, In addition</em> di awal kalimat wajib diikuti koma (,).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= TAB 3: ASSESSMENT (10 QUESTIONS + GSHEET SUBMIT) ================= -->
+    <div id="tabContent-kuis" class="tab-pane hidden space-y-8 animate-fade-in">
+      
+      <!-- Quiz Header / Status Bar -->
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-6">
+          <div>
+            <div class="inline-flex items-center space-x-2 text-xs font-bold text-brand-600 bg-brand-50 px-3 py-1 rounded-full mb-2">
+              <i class="fa-solid fa-clipboard-check"></i>
+              <span>Official Assessment Kelas XI</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-display font-extrabold text-slate-900">Evaluasi Capaian Pembelajaran</h2>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">10 soal pilihan ganda (Beginner to Intermediate). Nilai akan tersimpan otomatis ke Spreadsheet Guru.</p>
+          </div>
+
+          <div class="flex items-center space-x-4">
+            <div class="text-right">
+              <p class="text-xs text-slate-400 font-semibold uppercase">Status Lembar Ujian</p>
+              <p id="quizProgressCount" class="text-base font-bold text-slate-800 font-mono">0 / 10 Terjawab</p>
+            </div>
+            <div class="w-16 h-16 rounded-2xl bg-brand-50 text-brand-700 flex flex-col items-center justify-center font-display font-extrabold border border-brand-100">
+              <span id="quizScoreDisplay" class="text-2xl leading-none">--</span>
+              <span class="text-[10px] text-brand-500 uppercase tracking-tight mt-1">Score</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Student summary badge in Quiz -->
+        <div class="mt-4 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200">
+          <div>Peserta: <strong id="quizUserLabel" class="text-slate-800 font-semibold">-</strong> | Kelas: <span id="quizClassLabel" class="font-bold text-brand-700">-</span></div>
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span id="sheetConnectionStatus" class="text-[11px] font-semibold text-slate-500">Google Sheet: Siap Menerima Data</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz Form Container -->
+      <form id="quizForm" onsubmit="submitAssessment(event)" class="space-y-6">
+        <div id="quizQuestionsContainer" class="space-y-6">
+          <!-- Question cards will be dynamically rendered here -->
+        </div>
+
+        <!-- Submission Actions & Results Area -->
+        <div id="quizSubmitPanel" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <h4 class="font-bold text-slate-900 text-sm">Sudah memeriksa seluruh jawaban?</h4>
+            <p class="text-xs text-slate-500">Setelah tombol kirim ditekan, jawaban akan dinilai dan hasil dikirim langsung ke database Google Sheets guru.</p>
+          </div>
+          <button type="submit" id="btnSubmitQuiz"
+            class="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/25 transition transform active:scale-95 flex items-center justify-center space-x-2 shrink-0">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span>Kirim Jawaban & Simpan Nilai</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Post-Submission Feedback Card (Hidden initially) -->
+      <div id="postSubmitSummary" class="hidden bg-white rounded-3xl border-2 border-emerald-500 p-6 sm:p-8 shadow-xl space-y-6">
+        <div class="text-center max-w-lg mx-auto space-y-3">
+          <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl mx-auto flex items-center justify-center text-2xl shadow-inner">
+            <i class="fa-solid fa-trophy"></i>
+          </div>
+          <h3 class="text-2xl font-display font-extrabold text-slate-900">Ujian Berhasil Diserahkan!</h3>
+          <p id="postSubmitText" class="text-sm text-slate-600">Nilai Anda berhasil dihitung dan data telah disiapkan untuk dikirim ke Google Sheets.</p>
+          <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-around">
+            <div>
+              <span class="text-xs text-emerald-700 block uppercase font-bold">Skor Akhir</span>
+              <span id="finalScoreVal" class="text-3xl font-display font-black text-emerald-800">100</span>
+            </div>
+            <div class="h-8 w-px bg-emerald-200"></div>
+            <div>
+              <span class="text-xs text-emerald-700 block uppercase font-bold">Jawaban Benar</span>
+              <span id="finalCorrectCount" class="text-2xl font-display font-bold text-emerald-800">10 / 10</span>
+            </div>
+            <div class="h-8 w-px bg-emerald-200"></div>
+            <div>
+              <span class="text-xs text-emerald-700 block uppercase font-bold">Predikat</span>
+              <span id="finalGradeBadge" class="text-sm font-bold px-2.5 py-1 rounded-lg bg-emerald-600 text-white">Excellent</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-3 pt-4 border-t border-slate-100">
+          <button onclick="downloadCSVBackup()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition flex items-center space-x-1.5">
+            <i class="fa-solid fa-file-csv text-emerald-600"></i>
+            <span>Unduh Bukti Nilai (.CSV)</span>
+          </button>
+          <button onclick="openConfigModal()" class="px-4 py-2.5 border border-slate-200 text-slate-600 hover:text-brand-600 text-xs font-bold rounded-xl transition flex items-center space-x-1.5">
+            <i class="fa-solid fa-gear"></i>
+            <span>Lihat Payload / GSheet Webhook</span>
+          </button>
+          <button onclick="retakeQuiz()" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl transition flex items-center space-x-1.5">
+            <i class="fa-solid fa-rotate-left"></i>
+            <span>Ulangi Pengerjaan</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ================= GOOGLE SPREADSHEET CONFIG MODAL ================= -->
+  <div id="configModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-6 relative max-h-[90vh] overflow-y-auto">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-table"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-slate-900 text-lg">Integrasi Google Spreadsheet</h3>
+            <p class="text-xs text-slate-500">Hubungkan hasil kuis ke Google Sheets secara real-time</p>
+          </div>
+        </div>
+        <button onclick="closeConfigModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs sm:text-sm text-slate-600">
+        <p>Aplikasi ini dapat mengirim data pengerjaan siswa langsung ke Google Spreadsheet menggunakan <strong>Google Apps Script Webhook</strong>. Ikuti langkah 1 menit berikut:</p>
+
+        <!-- Instructions Accordion / Steps -->
+        <ol class="space-y-2.5 list-decimal pl-5 font-normal">
+          <li>Buat Google Spreadsheet baru di Google Drive Anda.</li>
+          <li>Beri judul kolom pada Baris 1: <br>
+            <code class="bg-slate-100 px-2 py-0.5 rounded text-brand-700 font-mono text-[11px] block mt-1">Timestamp | Nama_Siswa | Kelas | Skor | Benar | Salah | Total_Soal</code>
+          </li>
+          <li>Klik menu <strong>Extensions (Ekstensi) &gt; Apps Script</strong>, salin dan tempel kode skrip di bawah ini:</li>
+        </ol>
+
+        <!-- Apps Script Code block for Teachers -->
+        <div class="relative">
+          <pre class="bg-slate-900 text-slate-200 p-3 rounded-xl text-xs font-mono overflow-x-auto max-h-40">
+function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+  sheet.appendRow([
+    data.timestamp || new Date(),
+    data.name,
+    data.className,
+    data.score,
+    data.correctCount,
+    data.wrongCount,
+    data.totalQuestions
+  ]);
+  return ContentService.createTextOutput(JSON.stringify({"status":"success"}))
+    .setMimeType(ContentService.MimeType.JSON);
+}</pre>
+          <button onclick="copyScriptCode()" class="absolute top-2 right-2 px-2.5 py-1 bg-white/20 hover:bg-white/30 text-white rounded text-[11px] font-mono transition">
+            <i class="fa-regular fa-copy mr-1"></i>Salin Script
+          </button>
+        </div>
+
+        <ol start="4" class="space-y-2 list-decimal pl-5 font-normal">
+          <li>Klik <strong>Deploy (Terapkan) &gt; New deployment (Penerapan baru)</strong>.</li>
+          <li>Pilih jenis <strong>Web app</strong>, ubah <em>Who has access</em> menjadi <strong>Anyone (Siapa saja)</strong>, lalu Deploy.</li>
+          <li>Salin <strong>Web App URL</strong> yang dihasilkan dan tempelkan pada kolom di bawah:</li>
+        </ol>
+
+        <!-- Input Webhook URL -->
+        <div class="space-y-1.5 pt-2">
+          <label class="block text-xs font-bold text-slate-800 uppercase">Google Apps Script Webhook URL:</label>
+          <input type="url" id="sheetWebhookUrl" placeholder="https://script.google.com/macros/s/AKfycbx.../exec"
+            class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 font-mono focus:bg-white focus:outline-none">
+          <p class="text-[11px] text-slate-400 italic">*Jika dikosongkan, data tetap tersimpan di sesi browser dan siswa dapat mengunduh bukti nilai via .CSV.</p>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-slate-100 flex items-center justify-end space-x-3">
+        <button onclick="closeConfigModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition">
+          Batal
+        </button>
+        <button onclick="saveWebhookUrl()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition shadow shadow-emerald-600/20">
+          Simpan Konfigurasi
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    /* ----------------------------------------------------
+       APP STATE & LOCAL STORAGE (IN-MEMORY BY DEFAULT)
+       ---------------------------------------------------- */
+    let currentStudent = {
+      name: "",
+      class: "XI-A"
+    };
+
+    let userAnswers = {};
+    let lastAssessmentResult = null;
+    let webhookEndpoint = "https://script.google.com/macros/s/AKfycbxf2TLC7EHEWkRvcCVOByomg02PhMB8X_KGs9W-hSYSMDRDisJcprltJuv9bLlaSeQ/exec";
+
+    // Load saved webhook URL if configured
+    try {
+      const savedUrl = localStorage.getItem("eng_sheet_webhook");
+      if (savedUrl) {
+        webhookEndpoint = savedUrl;
+      }
+    } catch (e) {
+      console.log("Storage access restricted, using in-memory state.");
+    }
+
+    /* ----------------------------------------------------
+       10 ASSESSMENT QUESTIONS (GRADE XI HIGH SCHOOL)
+       Beginner to Intermediate with explanations
+       ---------------------------------------------------- */
+    const assessmentQuestions = [
+      {
+        id: 1,
+        level: "Beginner",
+        category: "Capitalization",
+        question: "Which of the following sentences has the CORRECT capitalization?",
+        options: [
+          { text: "every wednesday, mr. brian teaches english literature.", correct: false },
+          { text: "Every Wednesday, Mr. Brian teaches English Literature.", correct: false },
+          { text: "Every Wednesday, Mr. Brian teaches English literature.", correct: true },
+          { text: "Every wednesday, Mr. brian teaches English literature.", correct: false }
+        ],
+        explanation: "'Wednesday', 'Mr.', and 'Brian' require capitals. 'English' is capitalized as a proper language adjective, but school subjects like 'literature' are NOT capitalized unless it's an official course title with a code."
+      },
+      {
+        id: 2,
+        level: "Beginner",
+        category: "Basic Punctuation",
+        question: "Choose the sentence that correctly uses the apostrophe for possession and contraction:",
+        options: [
+          { text: "The dog wagged it's tail because its happy to see it's owner.", correct: false },
+          { text: "The dog wagged its tail because it's happy to see its owner.", correct: true },
+          { text: "The dog wagged its' tail because its happy to see its owner.", correct: false },
+          { text: "The dog wagged it's tail because its happy to see its owner.", correct: false }
+        ],
+        explanation: "'Its' is the possessive pronoun (no apostrophe), while 'it\'s' is the short form for 'it is'."
+      },
+      {
+        id: 3,
+        level: "Beginner - Intermediate",
+        category: "Comma & Clauses",
+        question: "Identify the sentence that correctly applies the rule for introductory dependent clauses:",
+        options: [
+          { text: "Although the rain was pouring heavily we decided to finish the project.", correct: false },
+          { text: "Although the rain was pouring heavily, we decided to finish the project.", correct: true },
+          { text: "We decided to finish the project, although the rain was pouring heavily.", correct: false },
+          { text: "Although, the rain was pouring heavily we decided to finish the project.", correct: false }
+        ],
+        explanation: "When an adverbial clause starts a sentence ('Although...'), a comma must separate it from the main independent clause."
+      },
+      {
+        id: 4,
+        level: "Intermediate",
+        category: "Compound Sentences",
+        question: "Which sentence correctly coordinates two independent clauses using FANBOYS?",
+        options: [
+          { text: "Citra wanted to submit her biology report early but the internet connection went down.", correct: false },
+          { text: "Citra wanted to submit her biology report early, but the internet connection went down.", correct: true },
+          { text: "Citra wanted to submit her biology report early; but the internet connection went down.", correct: false },
+          { text: "Citra wanted to submit her biology report early, but went down.", correct: false }
+        ],
+        explanation: "Two independent clauses joined by a coordinating conjunction ('but') must be preceded by a comma."
+      },
+      {
+        id: 5,
+        level: "Intermediate",
+        category: "Semicolon & Transitions",
+        question: "Select the sentence with the accurate punctuation for conjunctive adverbs (however/therefore):",
+        options: [
+          { text: "The examination was exceptionally tough, however most students passed.", correct: false },
+          { text: "The examination was exceptionally tough; however, most students passed.", correct: true },
+          { text: "The examination was exceptionally tough; however most students passed.", correct: false },
+          { text: "The examination was exceptionally tough, however, most students passed.", correct: false }
+        ],
+        explanation: "A semicolon (;) precedes the transitional adverb ('however') and a comma (,) follows it when joining two independent thoughts without causing a comma splice."
+      },
+      {
+        id: 6,
+        level: "Intermediate",
+        category: "Colon Usage",
+        question: "In which sentence is the colon (:) used PROPERLY to introduce a list?",
+        options: [
+          { text: "The necessary supplies for the biology lab include: safety goggles, a scalpel, and gloves.", correct: false },
+          { text: "For the biology lab, please bring: safety goggles, a scalpel, and gloves.", correct: false },
+          { text: "Students must bring three items to the biology lab: safety goggles, a scalpel, and gloves.", correct: true },
+          { text: "Students must bring: safety goggles, a scalpel, and gloves to the lab.", correct: false }
+        ],
+        explanation: "A colon must follow a complete sentence (independent clause). It should not directly follow verbs like 'include' or prepositions like 'bring'."
+      },
+      {
+        id: 7,
+        level: "Intermediate",
+        category: "Direct Speech & Quotes",
+        question: "Which sentence features standard American/British punctuation for direct quotes?",
+        options: [
+          { text: "“Submit your Analytical Exposition essays before Friday”, announced the teacher.", correct: false },
+          { text: "“Submit your analytical exposition essays before Friday,” announced the teacher.", correct: true },
+          { text: "“Submit your analytical exposition essays before Friday”, Announced the teacher.", correct: false },
+          { text: "“Submit your analytical exposition essays before Friday.” announced the teacher.", correct: false }
+        ],
+        explanation: "In standard dialogue formatting, the comma is placed inside quotation marks (“...,”), and the dialogue tag begins with lowercase unless it's a proper noun."
+      },
+      {
+        id: 8,
+        level: "Intermediate",
+        category: "Non-defining Relative Clauses",
+        question: "Find the sentence that accurately isolates non-essential (parenthetical) information:",
+        options: [
+          { text: "Budi who won the National Olympiad was awarded a full scholarship.", correct: false },
+          { text: "Budi, who won the National Olympiad was awarded a full scholarship.", correct: false },
+          { text: "Budi, who won the National Olympiad, was awarded a full scholarship.", correct: true },
+          { text: "Budi who won the National Olympiad, was awarded a full scholarship.", correct: false }
+        ],
+        explanation: "Non-essential clauses providing extra info about a specific person (Budi) must be enclosed by a pair of commas."
+      },
+      {
+        id: 9,
+        level: "Beginner - Intermediate",
+        category: "Capitalization: Geography & Seasons",
+        question: "Which sentence is written with immaculate capitalization?",
+        options: [
+          { text: "We plan to visit northern Bali during the Summer vacation.", correct: false },
+          { text: "We plan to visit Northern Bali during the Summer vacation.", correct: false },
+          { text: "We plan to visit northern Bali during the summer vacation.", correct: true },
+          { text: "We plan to visit northern bali during the summer vacation.", correct: false }
+        ],
+        explanation: "Compass directions ('northern') are lowercase unless they form a recognized political entity. Seasons ('summer') are not capitalized in standard English."
+      },
+      {
+        id: 10,
+        level: "Intermediate",
+        category: "Hyphens & Compound Modifiers",
+        question: "Which sentence properly handles hyphens for compound adjectives?",
+        options: [
+          { text: "Our school has a state of the art science laboratory.", correct: false },
+          { text: "Our school has a state-of-the-art science laboratory.", correct: true },
+          { text: "Our school has a highly-respected science teacher.", correct: false },
+          { text: "Our school has a state-of the-art science laboratory.", correct: false }
+        ],
+        explanation: "Use hyphens when combining multiple words into a single modifier before a noun ('state-of-the-art laboratory'). Note: adverbs ending in -ly ('highly respected') never take a hyphen."
+      }
+    ];
+
+    /* ----------------------------------------------------
+       SENTENCE DOCTOR DRILL DATA
+       ---------------------------------------------------- */
+    const drillCases = [
+      {
+        broken: "when mr handoko visited tokyo last winter he bought an ipad",
+        answer: "When Mr. Handoko visited Tokyo last winter, he bought an iPad.",
+        hint: "Perhatikan: Huruf kapital di awal, gelar (Mr.), nama kota, koma setelah klausa 'When...', dan merek dagang (iPad)."
+      },
+      {
+        broken: "she likes apples bananas and oranges however she dislikes papaya",
+        answer: "She likes apples, bananas, and oranges; however, she dislikes papaya.",
+        hint: "Gunakan Oxford comma untuk daftar buah, lalu titik koma (;) sebelum 'however' dan koma setelahnya."
+      },
+      {
+        broken: "the students bags were left in classroom xi-a because it was raining",
+        answer: "The students' bags were left in Classroom XI-A because it was raining.",
+        hint: "Kepemilikan jamak 'students'', huruf kapital pada nama ruang spesifik 'Classroom XI-A'."
+      },
+      {
+        broken: "dr santi said the test will begin at 08:00 am sharp",
+        answer: "Dr. Santi said, \"The test will begin at 08:00 AM sharp.\"",
+        hint: "Kutipan langsung butuh koma setelah 'said', tanda petik dua, dan huruf kapital awal kalimat kutipan."
+      }
+    ];
+    let currentDrillIndex = 0;
+
+    /* ----------------------------------------------------
+       INIT & EVENT HANDLERS
+       ---------------------------------------------------- */
+    window.addEventListener("DOMContentLoaded", () => {
+      // Setup Webhook URL input if pre-stored
+      if (webhookEndpoint) {
+        const inputElem = document.getElementById("sheetWebhookUrl");
+        if (inputElem) inputElem.value = webhookEndpoint;
+        updateSheetIndicator(true);
+      }
+      renderQuizQuestions();
+      loadDrillCase(currentDrillIndex);
+    });
+
+    // Handle Login
+    function handleLogin(e) {
+      e.preventDefault();
+      const nameInput = document.getElementById("inputName").value.trim();
+      const classInput = document.querySelector('input[name="classOption"]:checked').value;
+
+      if (!nameInput) {
+        showToast("Mohon isi nama lengkap Anda!", "error");
+        return;
+      }
+
+      currentStudent.name = nameInput;
+      currentStudent.class = classInput;
+
+      // Update Nav profile
+      document.getElementById("navStudentName").textContent = currentStudent.name;
+      document.getElementById("navStudentClass").textContent = currentStudent.class;
+      document.getElementById("quizUserLabel").textContent = currentStudent.name;
+      document.getElementById("quizClassLabel").textContent = currentStudent.class;
+
+      // Transition views
+      document.getElementById("loginSection").classList.add("hidden");
+      document.getElementById("mainNav").classList.remove("hidden");
+      document.getElementById("appContent").classList.remove("hidden");
+
+      showToast(`Selamat datang, ${currentStudent.name} (${currentStudent.class})!`, "success");
+    }
+
+    function logout() {
+      if (confirmLogout()) {
+        document.getElementById("loginSection").classList.remove("hidden");
+        document.getElementById("mainNav").classList.add("hidden");
+        document.getElementById("appContent").classList.add("hidden");
+        userAnswers = {};
+        retakeQuiz();
+        showToast("Anda telah keluar dari sesi belajar.", "info");
+      }
+    }
+
+    function confirmLogout() {
+      // In-app soft confirm replacement
+      return window.confirm("Apakah Anda yakin ingin berganti akun / keluar?");
+    }
+
+    /* ----------------------------------------------------
+       TAB NAVIGATION
+       ---------------------------------------------------- */
+    function switchTab(tabId) {
+      // Hide all panes
+      document.querySelectorAll(".tab-pane").forEach(pane => pane.classList.add("hidden"));
+      
+      // Reset desktop tab button styles
+      document.querySelectorAll(".nav-tab").forEach(btn => {
+        btn.classList.remove("text-brand-600", "bg-white", "shadow-sm");
+        btn.classList.add("text-slate-600");
+      });
+
+      // Reset mobile tabs
+      document.querySelectorAll(".nav-tab-mobile").forEach(btn => {
+        btn.classList.remove("text-brand-600", "bg-brand-50", "border", "border-brand-200");
+        btn.classList.add("text-slate-600", "bg-slate-100");
+      });
+
+      // Show selected pane
+      const targetPane = document.getElementById(`tabContent-${tabId}`);
+      if (targetPane) targetPane.classList.remove("hidden");
+
+      // Activate desktop button
+      const activeBtn = document.getElementById(`tabBtn-${tabId}`);
+      if (activeBtn) {
+        activeBtn.classList.add("text-brand-600", "bg-white", "shadow-sm");
+        activeBtn.classList.remove("text-slate-600");
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ----------------------------------------------------
+       SENTENCE DOCTOR (DRILL) LOGIC
+       ---------------------------------------------------- */
+    function loadDrillCase(index) {
+      const data = drillCases[index];
+      document.getElementById("drillCounter").textContent = `Case ${index + 1} of ${drillCases.length}`;
+      document.getElementById("drillBrokenText").textContent = data.broken;
+      document.getElementById("drillInput").value = "";
+      
+      const feedback = document.getElementById("drillFeedback");
+      feedback.className = "hidden p-4 rounded-xl text-xs sm:text-sm font-medium";
+      feedback.innerHTML = "";
+    }
+
+    function checkDrillAnswer() {
+      const userInput = document.getElementById("drillInput").value.trim();
+      const currentCase = drillCases[currentDrillIndex];
+      const feedback = document.getElementById("drillFeedback");
+
+      if (!userInput) {
+        showToast("Tulis perbaikan kalimatmu dulu ya!", "warning");
+        return;
+      }
+
+      // Exact or near normalized match check
+      const normalize = (str) => str.replace(/[""]/g, '"').replace(/['']/g, "'").trim();
+      const isCorrect = normalize(userInput) === normalize(currentCase.answer);
+
+      feedback.classList.remove("hidden");
+      if (isCorrect) {
+        feedback.className = "p-4 rounded-xl text-xs sm:text-sm font-medium bg-emerald-50 text-emerald-800 border border-emerald-200";
+        feedback.innerHTML = `<div class="flex items-center space-x-2 font-bold text-emerald-700 mb-1"><i class="fa-solid fa-circle-check text-lg"></i><span>Luar Biasa! Tepat Sekali!</span></div><p>Penulisan kapitalisasi dan tanda baca Anda 100% akurat.</p>`;
+        triggerMiniCelebration();
+      } else {
+        feedback.className = "p-4 rounded-xl text-xs sm:text-sm font-medium bg-rose-50 text-rose-800 border border-rose-200";
+        feedback.innerHTML = `
+          <div class="flex items-center space-x-2 font-bold text-rose-700 mb-1">
+            <i class="fa-solid fa-circle-xmark text-lg"></i>
+            <span>Masih Kurang Tepat, Perhatikan Lagi:</span>
+          </div>
+          <div class="mt-2 text-xs font-mono bg-white p-2.5 rounded-lg border border-rose-200 text-slate-800">
+            <strong>Kunci Jawaban:</strong><br>${currentCase.answer}
+          </div>
+        `;
+      }
+    }
+
+    function showDrillHint() {
+      const currentCase = drillCases[currentDrillIndex];
+      const feedback = document.getElementById("drillFeedback");
+      feedback.classList.remove("hidden");
+      feedback.className = "p-4 rounded-xl text-xs sm:text-sm font-medium bg-amber-50 text-amber-900 border border-amber-200";
+      feedback.innerHTML = `<strong class="block mb-1 font-bold text-amber-800"><i class="fa-solid fa-lightbulb text-amber-500 mr-1.5"></i>Petunjuk:</strong> ${currentCase.hint}`;
+    }
+
+    function nextDrill() {
+      currentDrillIndex = (currentDrillIndex + 1) % drillCases.length;
+      loadDrillCase(currentDrillIndex);
+    }
+
+    /* ----------------------------------------------------
+       ASSESSMENT / QUIZ GENERATION & SELECTION
+       ---------------------------------------------------- */
+    function renderQuizQuestions() {
+      const container = document.getElementById("quizQuestionsContainer");
+      container.innerHTML = "";
+
+      assessmentQuestions.forEach((q, index) => {
+        const card = document.createElement("div");
+        card.className = "bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 shadow-sm transition hover:border-slate-300 question-card";
+        card.id = `qCard-${q.id}`;
+
+        let optionsHtml = "";
+        q.options.forEach((opt, optIndex) => {
+          optionsHtml += `
+            <label class="relative flex items-start p-3.5 sm:p-4 rounded-2xl border border-slate-200 cursor-pointer hover:bg-slate-50 transition has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50/60 option-label">
+              <input type="radio" name="question_${q.id}" value="${optIndex}" onchange="onSelectAnswer(${q.id}, ${optIndex})" class="mt-1 text-brand-600 focus:ring-brand-500 rounded-full">
+              <span class="ml-3 text-xs sm:text-sm font-medium text-slate-800 leading-relaxed font-mono">${opt.text}</span>
+            </label>
+          `;
+        });
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold text-brand-700 bg-brand-50 px-2.5 py-1 rounded-lg border border-brand-100">
+              Soal #${index + 1} &bull; ${q.category}
+            </span>
+            <span class="text-[11px] font-semibold text-slate-400 bg-slate-100 px-2 py-0.5 rounded">${q.level}</span>
+          </div>
+
+          <p class="text-sm sm:text-base font-semibold text-slate-900 mb-4">${q.question}</p>
+
+          <div class="space-y-2.5">
+            ${optionsHtml}
+          </div>
+
+          <!-- Explanation box (Revealed after submission) -->
+          <div id="explanation-${q.id}" class="hidden mt-4 pt-4 border-t border-slate-100 text-xs sm:text-sm"></div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function onSelectAnswer(qId, optionIndex) {
+      userAnswers[qId] = optionIndex;
+      const answeredCount = Object.keys(userAnswers).length;
+      document.getElementById("quizProgressCount").textContent = `${answeredCount} / ${assessmentQuestions.length} Terjawab`;
+    }
+
+    /* ----------------------------------------------------
+       ASSESSMENT SUBMISSION & GOOGLE SHEETS SCRIPT DISPATCH
+       ---------------------------------------------------- */
+    async function submitAssessment(e) {
+      e.preventDefault();
+
+      const totalQuestions = assessmentQuestions.length;
+      const answeredCount = Object.keys(userAnswers).length;
+
+      if (answeredCount < totalQuestions) {
+        const proceed = window.confirm(`Perhatian: Anda baru menjawab ${answeredCount} dari ${totalQuestions} soal. Apakah yakin ingin mengirim sekarang?`);
+        if (!proceed) return;
+      }
+
+      // Calculate score
+      let correctCount = 0;
+      assessmentQuestions.forEach((q) => {
+        const chosenIndex = userAnswers[q.id];
+        const isCorrect = chosenIndex !== undefined && q.options[chosenIndex].correct;
+        if (isCorrect) correctCount++;
+
+        // Reveal explanations in DOM
+        const expBox = document.getElementById(`explanation-${q.id}`);
+        const card = document.getElementById(`qCard-${q.id}`);
+
+        if (expBox) {
+          expBox.classList.remove("hidden");
+          if (isCorrect) {
+            expBox.className = "mt-4 pt-3 border-t border-emerald-100 text-xs text-emerald-800 bg-emerald-50/60 p-3 rounded-xl";
+            expBox.innerHTML = `<strong>Jawabanmu Benar!</strong> ${q.explanation}`;
+          } else {
+            const correctOption = q.options.find(o => o.correct);
+            expBox.className = "mt-4 pt-3 border-t border-rose-100 text-xs text-rose-800 bg-rose-50/60 p-3 rounded-xl";
+            expBox.innerHTML = `<strong>Jawaban Kurang Tepat.</strong> Kunci: <em>"${correctOption.text}"</em>.<br>${q.explanation}`;
+          }
+        }
+      });
+
+      const score = Math.round((correctCount / totalQuestions) * 100);
+      const wrongCount = totalQuestions - correctCount;
+
+      lastAssessmentResult = {
+        timestamp: new Date().toLocaleString("id-ID"),
+        name: currentStudent.name,
+        className: currentStudent.class,
+        score: score,
+        correctCount: correctCount,
+        wrongCount: wrongCount,
+        totalQuestions: totalQuestions
+      };
+
+      // Update UI displays
+      document.getElementById("quizScoreDisplay").textContent = score;
+      document.getElementById("finalScoreVal").textContent = score;
+      document.getElementById("finalCorrectCount").textContent = `${correctCount} / ${totalQuestions}`;
+
+      const gradeBadge = document.getElementById("finalGradeBadge");
+      if (score >= 90) {
+        gradeBadge.textContent = "Sangat Memuaskan (A)";
+        gradeBadge.className = "text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-600 text-white";
+      } else if (score >= 75) {
+        gradeBadge.textContent = "Tuntas KKM (B)";
+        gradeBadge.className = "text-xs font-bold px-2.5 py-1 rounded-lg bg-indigo-600 text-white";
+      } else {
+        gradeBadge.textContent = "Perlu Remedial (C)";
+        gradeBadge.className = "text-xs font-bold px-2.5 py-1 rounded-lg bg-amber-500 text-white";
+      }
+
+      // Hide submit button panel, show post summary
+      document.getElementById("quizSubmitPanel").classList.add("hidden");
+      document.getElementById("postSubmitSummary").classList.remove("hidden");
+
+      // Send to Google Sheets Webhook if configured
+      await sendDataToGoogleSheet(lastAssessmentResult);
+
+      if (score >= 75) {
+        triggerMiniCelebration();
+      }
+
+      // Scroll to post submit summary
+      document.getElementById("postSubmitSummary").scrollIntoView({ behavior: "smooth" });
+    }
+
+    async function sendDataToGoogleSheet(payload) {
+      if (!webhookEndpoint) {
+        showToast("Nilai tersimpan lokal! Masukkan URL Google Script untuk sinkronisasi otomatis.", "info");
+        return;
+      }
+
+      showToast("Sedang mengirim nilai ke Google Sheets...", "info");
+
+      try {
+        // Mode 'no-cors' is typical for Google Apps Script Webhook
+        await fetch(webhookEndpoint, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        showToast("Berhasil! Nilai Anda sudah masuk ke Google Spreadsheet Guru.", "success");
+      } catch (err) {
+        console.error("GSheet Error:", err);
+        showToast("Koneksi ke spreadsheet gagal. Anda tetap bisa unduh bukti .CSV.", "error");
+      }
+    }
+
+    function retakeQuiz() {
+      userAnswers = {};
+      document.getElementById("quizForm").reset();
+      document.getElementById("quizProgressCount").textContent = `0 / ${assessmentQuestions.length} Terjawab`;
+      document.getElementById("quizScoreDisplay").textContent = "--";
+
+      // Hide all explanations
+      assessmentQuestions.forEach(q => {
+        const exp = document.getElementById(`explanation-${q.id}`);
+        if (exp) exp.classList.add("hidden");
+      });
+
+      document.getElementById("quizSubmitPanel").classList.remove("hidden");
+      document.getElementById("postSubmitSummary").classList.add("hidden");
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ----------------------------------------------------
+       CSV EXPORT / BACKUP FOR STUDENTS & TEACHERS
+       ---------------------------------------------------- */
+    function downloadCSVBackup() {
+      if (!lastAssessmentResult) {
+        showToast("Belum ada data nilai kuis untuk diunduh.", "warning");
+        return;
+      }
+
+      const headers = ["Waktu_Pengerjaan", "Nama_Siswa", "Kelas", "Nilai_Akhir", "Jumlah_Benar", "Jumlah_Salah", "Total_Soal"];
+      const row = [
+        `"${lastAssessmentResult.timestamp}"`,
+        `"${lastAssessmentResult.name}"`,
+        `"${lastAssessmentResult.className}"`,
+        lastAssessmentResult.score,
+        lastAssessmentResult.correctCount,
+        lastAssessmentResult.wrongCount,
+        lastAssessmentResult.totalQuestions
+      ];
+
+      const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), row.join(",")].join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `Hasil_Punctuation_${currentStudent.class}_${currentStudent.name.replace(/\s+/g, "_")}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast("File CSV hasil nilai berhasil diunduh!", "success");
+    }
+
+    /* ----------------------------------------------------
+       CONFIG & SPREADSHEET SETTINGS MODAL
+       ---------------------------------------------------- */
+    function openConfigModal() {
+      document.getElementById("configModal").classList.remove("hidden");
+      document.getElementById("configModal").classList.add("flex");
+    }
+
+    function closeConfigModal() {
+      document.getElementById("configModal").classList.add("hidden");
+      document.getElementById("configModal").classList.remove("flex");
+    }
+
+    function saveWebhookUrl() {
+      const urlInput = document.getElementById("sheetWebhookUrl").value.trim();
+      webhookEndpoint = urlInput;
+      try {
+        localStorage.setItem("eng_sheet_webhook", urlInput);
+      } catch (e) {}
+
+      updateSheetIndicator(!!urlInput);
+      closeConfigModal();
+      showToast(urlInput ? "URL Webhook Google Sheets berhasil disimpan!" : "Integrasi webhook di-reset ke mode lokal.", "success");
+    }
+
+    function updateSheetIndicator(isConnected) {
+      const statusText = document.getElementById("sheetConnectionStatus");
+      if (isConnected) {
+        statusText.innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-link mr-1"></i>Google Sheet Terhubung</span>`;
+      } else {
+        statusText.textContent = "Google Sheet: Mode Mandiri / Siap Integrasi";
+      }
+    }
+
+    function copyScriptCode() {
+      const code = `function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+  sheet.appendRow([
+    data.timestamp || new Date(),
+    data.name,
+    data.className,
+    data.score,
+    data.correctCount,
+    data.wrongCount,
+    data.totalQuestions
+  ]);
+  return ContentService.createTextOutput(JSON.stringify({"status":"success"}))
+    .setMimeType(ContentService.MimeType.JSON);
+}`;
+      const textarea = document.createElement("textarea");
+      textarea.value = code;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      showToast("Kode Google Apps Script disalin ke clipboard!", "success");
+    }
+
+    /* ----------------------------------------------------
+       TOAST & VISUAL POLISH
+       ---------------------------------------------------- */
+    function showToast(message, type = "info") {
+      const toast = document.getElementById("toast");
+      const title = document.getElementById("toast-title");
+      const msg = document.getElementById("toast-message");
+      const icon = document.getElementById("toast-icon");
+      const iconWrapper = document.getElementById("toast-icon-wrapper");
+
+      msg.textContent = message;
+
+      if (type === "success") {
+        title.textContent = "Berhasil";
+        iconWrapper.className = "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-emerald-100 text-emerald-600";
+        icon.className = "fa-solid fa-check text-lg";
+      } else if (type === "error") {
+        title.textContent = "Perhatian";
+        iconWrapper.className = "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-rose-100 text-rose-600";
+        icon.className = "fa-solid fa-circle-exclamation text-lg";
+      } else if (type === "warning") {
+        title.textContent = "Peringatan";
+        iconWrapper.className = "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-amber-100 text-amber-600";
+        icon.className = "fa-solid fa-triangle-exclamation text-lg";
+      } else {
+        title.textContent = "Informasi";
+        iconWrapper.className = "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-indigo-100 text-indigo-600";
+        icon.className = "fa-solid fa-info text-lg";
+      }
+
+      toast.classList.remove("translate-y-[-120%]", "opacity-0");
+      toast.classList.add("translate-y-0", "opacity-100");
+
+      setTimeout(() => {
+        toast.classList.add("translate-y-[-120%]", "opacity-0");
+        toast.classList.remove("translate-y-0", "opacity-100");
+      }, 3500);
+    }
+
+    function triggerMiniCelebration() {
+      if (typeof confetti === "function") {
+        confetti({
+          particleCount: 60,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+  </script>
+</body>
+</html>
